@@ -1,0 +1,35 @@
+{% extends 'network/layout.html'%} {% load static %} {% block title %} {{user}}
+Profile {% endblock %} {% block body %}
+<div class="m-2 form-group" id="profile-box">
+  <h1 class="profile-heading">{{profile}}'s Profile</h1>
+  <p>Followers: <span>{{followerscount}}</span></p>
+  <p>Following: <span>{{followingcount}}</span></p>
+
+  <!-- Follow/Unfollow button for other users -->
+  {% if profile != user.username %} {% if following == False %}
+  <form action="{% url 'togglefollow' profile %}" method="post">
+    <input hidden value="follow" name="follow" />
+    <button class="btn btn-primary" id="follow-button">Follow</button>
+  </form>
+  {% else %}
+  <form action="{% url 'togglefollow' profile %}" method="post">
+    <input hidden value="unfollow" name="follow" />
+    <button class="btn btn-primary" id="unfollow-button">Unfollow</button>
+  </form>
+
+  {% endif %} {% endif %}
+  <!-- Repeat for all posts -->
+</div>
+
+{% if posts %} {% for post in posts %}
+<div class="form-group m-3">
+  <div>{{post.content}}</div>
+  <div>{{post.timestamp}}</div>
+  <div>{{post.like}}</div>
+</div>
+
+{% endfor %} {% else %}
+<div>This user has not made any post</div>
+{% endif %} {% endblock %} {% block script %}
+<link rel="stylesheet" src="{% static 'network/profile.css' %}" />
+{% endblock %}

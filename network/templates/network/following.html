@@ -1,0 +1,9 @@
+{% extends 'network/layout.html' %} {% block body %}
+<h1>Following</h1>
+
+{% if posts %} {% for post in posts %}
+
+<div>{{post.user}}</div>
+<div>{{post.content}}</div>
+<div>{{post.like}}</div>
+{% endfor%} {% endif %} {% endblock %}
