@@ -22,6 +22,7 @@ function toggleLike(postId) {
       const likesCountElement = document.querySelector(
         `.like-button[data-postid="${postId}"] ~ #likes-count`
       );
+      //returns liek
       likesCountElement.innerText = `${result.likes_count} likes`;
       const likeButtonElement = document.querySelector(
         `.like-button[data-postid="${postId}"]`

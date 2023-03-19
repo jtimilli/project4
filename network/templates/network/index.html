@@ -14,7 +14,7 @@
 
 {% if error %}
 <div class="alert alert-danger">{{error}}</div>
-{% endif %} {% for post in posts%}
+{% endif %} {% for post in posts %}
 
 <div class="card m-3">
   <div class="card-header">
@@ -29,20 +29,28 @@
   <div class="card-footer">
     <div class="d-flex justify-content-between align-items-center">
       <div class="btn-group">
+        {% if post %}
         <button
-          type="button"
-          class="btn btn-sm btn-outline-secondary like-button"
+          class="btn btn-sm btn-secondary unlike-button"
           data-postid="{{ post.id }}"
-          data-userId="{{post.user.id}}"
         >
-          {% if user in post.like %} Unlike {% else %} Like {% endif %}
+          Unlike
         </button>
+        {% else %}
+        <button
+          class="btn btn-sm btn-primary like-button"
+          data-postid="{{ post.id }}"
+        >
+          Like
+        </button>
+        {% endif %}
+
         <div
           type="button"
           id="likes-count"
           class="btn btn-sm btn-outline-secondary"
         >
-          {{post.likes.count }} likes
+          {{post.like }} likes
         </div>
       </div>
     </div>
