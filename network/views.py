@@ -11,7 +11,6 @@ from django.shortcuts import get_object_or_404
 
 from .models import User, Post, Following, Like
 
-
 def index(request):
     posts = Post.objects.all().order_by("timestamp")
     return render(request, "network/index.html",{"posts": posts} )
@@ -135,16 +134,19 @@ def toggleFollow(request, username):
 @csrf_exempt
 def toggleLike(request, id):
     post = Post.objects.get(id=id)
+    user = request.user
+    #
     if request.method == "POST":
-        user_liked = Like.objects.filter(post=post, user=request.user).exists()
+        user_liked = Like.objects.filter(post=post, user=user).exists()
         if user_liked:
-            Like.objects.filter(post=post, user=request.user).delete()
-            likes_count = post.likes.count()
+            Like.objects.filter(post=post, user=user).delete()
+            likes_count = post.likes
             return JsonResponse({"liked": False, "likes_count": likes_count})
         else:
-            liked = Like.objects.create(user=request.user, post=post)
+            liked = Like.objects.create(user=user, post=post)
             likes_count = post.likes.count()
             return JsonResponse({"liked": True, "likes_count": likes_count})
     else:
+        
         return JsonResponse(post.serialize())
  

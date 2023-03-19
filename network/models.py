@@ -16,27 +16,24 @@ class Following(models.Model):
 #     followed_at = models.TimeField(auto_now=True)
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="liked_by")
     post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name='likes', blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ('user', 'post')
 
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_post', null=True)
     content = models.CharField(max_length=64)
     timestamp = models.TimeField(auto_now=True)
-    like = models.ManyToManyField(Like, related_name="post_likes")
+    like = models.IntegerField(default=0)
 
     def serialize(self):
         return {
             'user': self.user.username,
             "content": self.content,
             "timestamp": self.timestamp,
-            "likes": self.like.all().count()
+            "likes": self.like,
         }
+
 
 
 
