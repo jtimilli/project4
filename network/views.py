@@ -13,7 +13,16 @@ from .models import User, Post, Following, Like
 
 def index(request):
     posts = Post.objects.all().order_by("timestamp")
-    return render(request, "network/index.html",{"posts": posts} )
+    data = []
+    for post in posts:
+        serialized_post = post.serialize()
+        if request.user.is_authenticated:
+            user_liked = Like.objects.filter(post=post, user=request.user).exists()
+        else:
+            user_liked = False
+        serialized_post['liked'] = user_liked
+        data.append(serialized_post)
+    return render(request, "network/index.html", {"data": data})
 
 
 def login_view(request):
@@ -135,18 +144,28 @@ def toggleFollow(request, username):
 def toggleLike(request, id):
     post = Post.objects.get(id=id)
     user = request.user
-    #
     if request.method == "POST":
+        # check if user already liked post
         user_liked = Like.objects.filter(post=post, user=user).exists()
+        # if user did like the post delete row and decrement the Post likes count
         if user_liked:
             Like.objects.filter(post=post, user=user).delete()
-            likes_count = post.likes
+            post.like = int(post.like - 1)
+            post.save()
+            likes_count = post.like
+            print(likes_count, "like count")
             return JsonResponse({"liked": False, "likes_count": likes_count})
         else:
             liked = Like.objects.create(user=user, post=post)
-            likes_count = post.likes.count()
+            post.like = int(post.like + 1)
+            post.save()
+            likes_count = post.like
+            liked.save()
+            print(post.like, "post likes")
             return JsonResponse({"liked": True, "likes_count": likes_count})
     else:
-        
-        return JsonResponse(post.serialize())
- 
+        user_liked = Like.objects.filter(post=post, user=user).exists()
+        data = {'post': post.serialize(),
+                'liked': user_liked,
+                'likes_count': post.like}
+        return JsonResponse(data)

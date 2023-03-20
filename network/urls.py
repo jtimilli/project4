@@ -16,5 +16,5 @@ urlpatterns = [
     path('post', views.getPost, name="post"),
     path('newpost', views.newPost, name="newpost"),
     path('togglefollow/<str:username>', views.toggleFollow, name="togglefollow"),
-    path('likes/<int:id>', views.toggleLike, name="toggleLike")
+    path('likes/<int:id>/', views.toggleLike, name="toggleLike")
 ]
