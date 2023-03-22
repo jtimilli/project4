@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 
 from .models import User, Post, Following, Like
@@ -76,6 +77,7 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
+@login_required
 def following(request):
     user = request.user
     following = Following.objects.filter(user=user).values_list("following", flat=True)
@@ -111,17 +113,21 @@ def getPost(request):
     return JsonResponse([post.seralize() for post in posts], safe=False)
 
 @csrf_exempt
+@login_required
 def newPost(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        post_content = data.get("content", "")
+        try:
+            post_content = request.POST.get("post_content")
+        except IntegrityError:
+            print(post_content, "Post2")
+        
         if post_content == "":
-            return JsonResponse({"error": "Post cannot be empty"})
+            return HttpResponseRedirect(reverse("index"), {"error": "Post cant be empty"})
         else:
             user = request.user
             post = Post.objects.create(user=user, content=post_content)
             post.save()
-            return JsonResponse({"message": "Successfully posted"})
+            return HttpResponseRedirect(reverse('index'))
 
 
 @csrf_exempt
