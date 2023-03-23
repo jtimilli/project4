@@ -35,27 +35,23 @@ function toggleLike() {
 function editPost() {
   const postId = this.dataset.postid;
 
-  // get content of current post
+  // Get content of current post
   const content_area = document.querySelector(
     `.content-text[data-postid="${postId}"]`
   );
 
   const content = content_area.innerText;
 
-  // Change the body of the post to textarea
-  const edit_area = document.querySelector(
-    `.editing-area[data-postid="${postId}"]`
-  );
-
+  //
   content_area.innerHTML = `<div class="m-3">
     <textarea class="new-content form-control" data-postid="${postId}" name="w3review" rows="4" cols="50">${content}</textarea>
     <br>
     <button class="btn btn-primary btn-sm" role="button" value="Save"> Save </button>
   </div>`;
 
-  // add event listener to the button
-  const saveBtn = edit_area.querySelector("button");
-  saveBtn.addEventListener("click", () => {
+  // Add event listener to the button
+  const saveButton = content_area.querySelector("button");
+  saveButton.addEventListener("click", () => {
     const content = document.querySelector(
       `.new-content[data-postid="${postId}"]`
     ).value;
@@ -76,9 +72,3 @@ function editPost() {
       });
   });
 }
-
-// const edit_area = document.querySelector(
-//   `.editing-area[data-postid="${postId}"]`
-// );
-
-// console.log(content);

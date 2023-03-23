@@ -175,3 +175,24 @@ def toggleLike(request, id):
                 'liked': user_liked,
                 'likes_count': post.like}
         return JsonResponse(data)
+
+@csrf_exempt
+def savePost(request, id):
+    if request.method == "POST" or request.method == "PUT":
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Post not found."}, status=404)
+
+        try:
+            content = json.loads(request.body).get("content")
+            if content is not None and content.strip() != "":
+                post.content = content
+                post.save()
+                return JsonResponse({"success": True})
+            else:
+                return JsonResponse({"error": "Content field cannot be empty"}, status=400)
+        except:
+            return JsonResponse({"error": "Invalid payload"}, status=400)
+    else:
+        return JsonResponse({"error": "Must be a POST or PUT request"}, status=403)

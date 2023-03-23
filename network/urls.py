@@ -16,5 +16,6 @@ urlpatterns = [
 # API Routes
     path('post', views.getPost, name="post"),
     path('togglefollow/<str:username>', views.toggleFollow, name="togglefollow"),
-    path('likes/<int:id>/', views.toggleLike, name="toggleLike")
+    path('likes/<int:id>/', views.toggleLike, name="toggleLike"),
+    path('savepost/<int:id>/', views.savePost, name="savepost")
 ]
