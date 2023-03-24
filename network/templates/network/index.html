@@ -28,41 +28,62 @@
     </p>
   </div>
   <div class="card-footer">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="btn-group">
-        {% if user.is_authenticated %}
-        <button
-          class="btn btn-sm btn-primary like-button"
-          data-postid="{{ post.id }}"
-        >
-          {% if post.liked %} Unlike {% else %} Like {% endif %}
-        </button>
-        {% endif %}
-        <div
-          type="button"
+    <div class="justify-content-between align-items-center">
+      {% if user.is_authenticated %}
+      <div class="row p-3">
+      
+            <button
+              class="btn btn-sm btn-primary like-button "
+              data-postid="{{ post.id }}"
+            >
+              {% if post.liked %} Unlike {% else %} Like {% endif %}
+            </button>
+        
+          {% endif %}
+          <div
           id="likes-count"
-          class="btn btn-sm btn-outline-secondary"
+          class="btn btn-sm btn-outline-secondary col-1"
+          data-postid="{{ post.id }}"
+          >
+          <span>{{ post.likes }} Likes</span>
+        </div>
+        </div>
+      </div>
+      {% if post.user == user.username %}
+      <div>
+        <button
+          class="btn btn-sm m-2 btn-default edit-button"
           data-postid="{{ post.id }}"
         >
-          {{ post.likes }} Likes
-        </div>
-        {% if post.user == user.username %}
-        <div>
-          <button
-            class="btn btn-sm m-2 btn-default edit-button"
-            data-postid="{{ post.id }}"
-          >
-            Edit post
-          </button>
-        </div>
-        {% endif %}
+          Edit post
+        </button>
       </div>
+
+      {% else %}
+      <div class="col-6"></div>
+      {% endif %}
     </div>
   </div>
 </div>
-{% endfor %} {% endblock %} {% block script %}
+{% endfor %} 
 
-<script src="{% static 'network/index.js' %}"></script>
+<nav aria-label="" class="m-3">
+  <ul class="pagination pagination-lg">
+    <li class="page-item"><span style="font-size: smaller">Page {{ data.number }} of {{ data.paginator.num_pages }}.</span></li>
+        {% if data.has_previous %}
+            <!-- <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li> -->
+            <li class="page-item"> <a class="page-link" href="?page={{ data.previous_page_number }}">previous</a> {% endif %}</li>
+        {% if data.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ data.next_page_number }}">next</a></li>
+            <!-- <li class="page-item"><a class="page-link" href="?page={{ data.paginator.num_pages }}">last &raquo;</a></li> -->
+        {% endif %}
+  </ul>
+</nav>
+
+
+{% endblock %} {% block script %}
+
+<script src="{% static 'network/post.js' %}"></script>
 <link
   rel="stylesheet"
   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"

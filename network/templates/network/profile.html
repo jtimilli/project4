@@ -1,13 +1,26 @@
-{% extends 'network/layout.html'%} {% load static %} {% block title %} {{user}}
-Profile {% endblock %} {% block body %}
-<div class="m-2 form-group" id="profile-box">
-  <h1 class="profile-heading">{{profile}}'s Profile</h1>
-  <p>Followers: <span>{{followerscount}}</span></p>
-  <p>Following: <span>{{followingcount}}</span></p>
+{% extends 'network/layout.html'%} {% load static %}
+
+<div>
+  {% block title %} {{user}} Profile {% endblock %} {% block body %}
+  <div class="m-2 form-group container text-center" id="profile-box">
+    <div class="row align-items-start">
+      <div class="col">
+        <h1 class="profile-heading">{{profile}}'s Profile</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <p>Followers: <span>{{followerscount}}</span></p>
+      </div>
+      <div class="col">
+        <p>Following: <span>{{followingcount}}</span></p>
+      </div>
+    </div>
+  </div>
 
   <!-- Follow/Unfollow button for other users -->
-  {% if profile != user.username %} {% if following == False %}
-  <form action="{% url 'togglefollow' profile %}" method="post">
+  {% if profile != user %} {% if following == False %}
+  <form action="{% url 'togglefollow' profile.username %}" method="post">
     <input hidden value="follow" name="follow" />
     <button class="btn btn-primary" id="follow-button">Follow</button>
   </form>
@@ -22,14 +35,56 @@ Profile {% endblock %} {% block body %}
 </div>
 
 {% if posts %} {% for post in posts %}
-<div class="form-group m-3">
-  <div>{{post.content}}</div>
-  <div>{{post.timestamp}}</div>
-  <div>{{post.like}}</div>
+<div class="card m-3">
+  <div class="card-header">
+    <a href="{% url 'profile' post.user %}">{{ post.user }}</a>
+  </div>
+  <div class="card-body">
+    <p class="card-text content-text" data-postid="{{ post.id }}">
+      {{ post.content }}
+    </p>
+    <p class="card-text">
+      <small class="text-muted">{{ post.timestamp }}</small>
+    </p>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center">
+      {% if user.is_authenticated %}
+      <button
+        class="btn btn-sm btn-primary like-button"
+        data-postid="{{ post.id }}"
+      >
+        {% if post.liked %} Unlike {% else %} Like {% endif %}
+      </button>
+      {% endif %}
+      <div
+        type="button"
+        id="likes-count"
+        class="btn btn-sm btn-outline-secondary"
+        data-postid="{{ post.id }}"
+      >
+        {{ post.like }} Likes
+      </div>
+      {% if post.user == user %}
+      <div>
+        <button
+          class="btn btn-sm m-2 btn-default edit-button"
+          data-postid="{{ post.id }}"
+        >
+          Edit post
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 {% endfor %} {% else %}
 <div>This user has not made any post</div>
 {% endif %} {% endblock %} {% block script %}
-<link rel="stylesheet" src="{% static 'network/profile.css' %}" />
+<script src="{% static 'network/post.js' %}"></script>
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+/>
 {% endblock %}
