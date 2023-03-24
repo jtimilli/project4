@@ -8,6 +8,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+
+
+#TODO: ensure using who is editing button is user of the post
+#TODO: Sort by timestamp
 
 
 from .models import User, Post, Following, Like
@@ -15,6 +20,7 @@ from .models import User, Post, Following, Like
 def index(request):
     posts = Post.objects.all().order_by("timestamp")
     data = []
+
     for post in posts:
         serialized_post = post.serialize()
         if request.user.is_authenticated:
@@ -23,7 +29,11 @@ def index(request):
             user_liked = False
         serialized_post['liked'] = user_liked
         data.append(serialized_post)
-    return render(request, "network/index.html", {"data": data})
+    paginator = Paginator(data, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "network/index.html", {"data": page_obj})
 
 
 def login_view(request):
@@ -82,16 +92,32 @@ def following(request):
     user = request.user
     following = Following.objects.filter(user=user).values_list("following", flat=True)
     posts = Post.objects.filter(user__in=following)
-    return render(request, 'network/following.html', {"posts": posts})
+    data = []
+    for post in posts:
+        serialized_post = post.serialize()
+        if request.user.is_authenticated:
+            user_liked = Like.objects.filter(post=post, user=request.user).exists()
+        else:
+            user_liked = False
+        serialized_post['liked'] = user_liked
+        data.append(serialized_post)
+    paginator = Paginator(data, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'network/following.html', {"data": page_obj})
 
 
 def profile(request, username):
+    #TODO:Check username that is passing as profile, 
     user = User.objects.get(username = username)
-    posts = Post.objects.filter(user = user)
-    posts = posts.order_by("-timestamp")
+    posts = Post.objects.filter(user = user).order_by("-timestamp")
     following = Following.objects.filter(user=user)
     followers = Following.objects.filter(following=user)
-    is_following = Following.objects.filter(user=request.user, following=user).exists()
+
+    try:
+        is_following = Following.objects.filter(user=request.user, following=user).exists()
+    except TypeError:
+        is_following = False
 
     if not following:
         followingcount = 0
@@ -102,8 +128,11 @@ def profile(request, username):
         followercount = 0
     else:
         followercount = followers.count()
-            
-    return render(request, 'network/profile.html', {"following": is_following, "followingcount": followingcount, "followerscount": followercount, "profile": user.username, "posts": posts})
+    paginator = Paginator(posts, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+         
+    return render(request, 'network/profile.html', {"following": is_following, "followingcount": followingcount, "followerscount": followercount, "profile": user, "posts": page_obj, })
 
 
 
@@ -120,8 +149,9 @@ def newPost(request):
             post_content = request.POST.get("post_content")
         except IntegrityError:
             print(post_content, "Post2")
+
         
-        if post_content == "":
+        if len(post_content.strip()) == 0:
             return HttpResponseRedirect(reverse("index"), {"error": "Post cant be empty"})
         else:
             user = request.user
@@ -177,7 +207,9 @@ def toggleLike(request, id):
         return JsonResponse(data)
 
 @csrf_exempt
+#TODO: Change names to saveEditPost or editPost
 def savePost(request, id):
+
     if request.method == "POST" or request.method == "PUT":
         try:
             post = Post.objects.get(id=id)
@@ -187,6 +219,9 @@ def savePost(request, id):
         try:
             content = json.loads(request.body).get("content")
             if content is not None and content.strip() != "":
+                # Checks to see if user editing pot is the user whp posted
+                if post.user != request.user:
+                    return JsonResponse({"error": "You cannot edit someone's post"})
                 post.content = content
                 post.save()
                 return JsonResponse({"success": True})

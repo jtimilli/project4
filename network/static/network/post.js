@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function toggleLike() {
   const postId = this.dataset.postid;
   console.log(postId, "Post Id");
-  fetch(`likes/${postId}/`, { method: "POST", body: JSON.stringify({}) })
+  fetch(`/likes/${postId}/`, { method: "POST", body: JSON.stringify({}) })
     .then(response => response.json())
     .then(result => {
       console.log(result);
@@ -40,11 +40,10 @@ function editPost() {
     `.content-text[data-postid="${postId}"]`
   );
 
-  const content = content_area.innerText;
+  const initial_content = content_area.innerText;
 
-  //
   content_area.innerHTML = `<div class="m-3">
-    <textarea class="new-content form-control" data-postid="${postId}" name="w3review" rows="4" cols="50">${content}</textarea>
+    <textarea class="new-content form-control" data-postid="${postId}" name="w3review" rows="4" cols="50">${initial_content}</textarea>
     <br>
     <button class="btn btn-primary btn-sm" role="button" value="Save"> Save </button>
   </div>`;
@@ -56,7 +55,7 @@ function editPost() {
       `.new-content[data-postid="${postId}"]`
     ).value;
 
-    fetch(`savepost/${postId}/`, {
+    fetch(`/savepost/${postId}/`, {
       method: "PUT",
       body: JSON.stringify({
         content: content,
@@ -66,9 +65,21 @@ function editPost() {
       .then(result => {
         console.log(result);
 
-        content_area.innerHTML = `<p class="card-text content-text" data-postid="{{ post.id }}">
+        if (result.hasOwnProperty("error")) {
+          content_area.innerHTML =
+            initial_content +
+            `<div class="alert alert-warning" role="alert">
+            ${result.error}
+        </div>`;
+
+          setTimeout(() => {
+            content_area.innerHTML = initial_content;
+          }, 2000);
+        } else {
+          content_area.innerHTML = `<p class="card-text content-text" data-postid="{{ post.id }}">
         ${content}
       </p>`;
+        }
       });
   });
 }

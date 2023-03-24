@@ -10,11 +10,6 @@ class Following(models.Model):
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_follows')
     followed_at = models.TimeField(auto_now=True)
 
-# class Follower(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_followed')
-#     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follows_user')
-#     followed_at = models.TimeField(auto_now=True)
-
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="liked_by")
     post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name='likes', blank=True, null=True)
