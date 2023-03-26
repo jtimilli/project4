@@ -11,11 +11,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 
-#TODO: ensure using who is editing button is user of the post
-#TODO: Sort by timestamp
-
-
 from .models import User, Post, Following, Like
+
+
 
 def index(request):
     posts = Post.objects.all().order_by("timestamp")
@@ -29,7 +27,7 @@ def index(request):
             user_liked = False
         serialized_post['liked'] = user_liked
         data.append(serialized_post)
-    paginator = Paginator(data, 5)
+    paginator = Paginator(data, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -101,14 +99,13 @@ def following(request):
             user_liked = False
         serialized_post['liked'] = user_liked
         data.append(serialized_post)
-    paginator = Paginator(data, 2)
+    paginator = Paginator(data, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'network/following.html', {"data": page_obj})
 
 
 def profile(request, username):
-    #TODO:Check username that is passing as profile, 
     user = User.objects.get(username = username)
     posts = Post.objects.filter(user = user).order_by("-timestamp")
     following = Following.objects.filter(user=user)
@@ -128,7 +125,7 @@ def profile(request, username):
         followercount = 0
     else:
         followercount = followers.count()
-    paginator = Paginator(posts, 2)
+    paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
          

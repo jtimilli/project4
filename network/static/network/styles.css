@@ -1,9 +1,30 @@
-.card.slide-down {
-  transform: translateY(100%);
-  transition: transform 0.3s ease-out;
+body {
+  background: linear-gradient(to right, #a5d5ff, #2b82ff);
+  animation: fadeIn 0.2s;
 }
 
-.card.slide-down.show {
-  transform: none;
+.navbar {
+  background: linear-gradient(to right, #a5d5ff, #2b82ff);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  font-size: large;
+  padding: 7px;
+  border-bottom: solid 1px white;
 }
 
+.card {
+  border-radius: 10px;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.55;
+    transform: rotateY(10deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+}

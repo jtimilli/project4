@@ -1,5 +1,7 @@
 {% extends 'network/layout.html' %} {% load static %}{% block body %}
-<h1>Following</h1>
+
+<h1 style="font-size: 36px; margin: auto 0; height: 70px; text-align: center; margin-top: 20px; background: linear-gradient(to right, #A5D5FF, #2B82FF); color: #fff; text-shadow: 2px 2px 4px #666;">Following</h1>
+
 
 {% if data %} {% for post in data %}
 <div class="card m-3">
@@ -49,25 +51,25 @@
 </div>
 {% endfor %} {% endif %}
 
-<nav>
+<nav class="m-2">
   <ul class="pagination">
     <li class="page-item">
       <a class="page-link" href=""
         >Page {{data.number }} of {{data.paginator.num_pages}}</a
       >
     </li>
-    {% if data.has_next %}
-    <li class="page-item">
-      <a class="page-link" href="?page={{data.next_page_numer}}">next</a>
-    </li>
-    {% endif %} {% if data.has_previous %}
+   {% if data.has_previous %}
     <li class="page-item">
       <a class="page-link" href="?page={{data.previous_page_number}}"
         >previous</a
       >
+      {% endif %}
+      {% if data.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ data.next_page_number }}">next</a>
+      </li>
+      {% endif %}
     </li>
-    {% endif %}
-    <li><a></a></li>
   </ul>
 </nav>
 
