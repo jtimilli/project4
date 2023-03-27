@@ -5,13 +5,13 @@
   <div class="m-2 form-group container text-center" id="profile-box">
     <div class="row align-items-start">
       <div class="col">
-        <h1 class="profile-heading">{{profile}}'s Profile</h1>
+        <h1 class="profile-heading">{{profile}}</h1>
         <i class="bi bi-0-circle"></i>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <p>Followers: <span>{{followerscount}}</span></p>
+        <p class="following-style">Followers: <span>{{followerscount}}</span></p>
 
         <!-- Follow/Unfollow button for other users -->
         {% if profile != user %} {% if following == False %}
@@ -32,7 +32,7 @@
         {% endif %} {% endif %}
       </div>
       <div class="col">
-        <p>Following: <span>{{followingcount}}</span></p>
+        <p class="following-style">Following: <span>{{followingcount}}</span></p>
       </div>
     </div>
   </div>
