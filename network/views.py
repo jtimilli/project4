@@ -145,7 +145,7 @@ def newPost(request):
         try:
             post_content = request.POST.get("post_content")
         except IntegrityError:
-            print(post_content, "Post2")
+            return HttpResponseRedirect(reverse('index', kwargs={"error": "Did not recieve content"}))
 
         
         if len(post_content.strip()) == 0:

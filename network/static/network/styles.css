@@ -1,7 +1,7 @@
 body {
-  background: linear-gradient(to right, #a5d5ff, #2b82ff);
+  background: floralwhite !important;
   animation: fadeIn 0.2s;
-  padding: 10px;
+  padding: 5px;
 }
 
 .navbar {
@@ -11,7 +11,7 @@ body {
   font-size: 17px;
   color: beige;
   padding: 0px;
-  border-bottom: solid 1px white;
+  box-shadow: 5px 5px 10px gray;
 }
 
 .navbar li a:hover {
@@ -20,7 +20,18 @@ body {
 
 .card {
   border-radius: 10px;
+  width: 50%;
   animation: fadeIn 1s;
+  margin: 10px auto;
+  box-shadow: 2px 2px 12px gray;
+}
+
+.card-header {
+  background: linear-gradient(to right, #a5d5ff, #2b82ff);
+}
+
+.card-box {
+  width: 100%;
 }
 
 h1 {
@@ -29,17 +40,17 @@ h1 {
   height: 50px;
   text-align: center;
   margin-top: 20px;
-  color: #337ab7 !important;
+  color: black !important;
   text-shadow: 2px 2px 4px #666;
 }
 
 .following-style {
-  font-size: 20px;
+  font-size: 25px;
   margin: auto 0;
   height: 20px;
   text-align: center;
-  margin-bottom: 20px;
-  color: white;
+  margin-bottom: 40px;
+  color: black;
   text-shadow: 2px 2px 4px #666;
 }
 

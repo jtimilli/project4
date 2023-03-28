@@ -11,7 +11,7 @@
     </div>
     <div class="row">
       <div class="col">
-        <p class="following-style">Followers: <span>{{followerscount}}</span></p>
+        <p class="following-style" style="color: a5d5f;">Followers: <span>{{followerscount}}</span></p>
 
         <!-- Follow/Unfollow button for other users -->
         {% if profile != user %} {% if following == False %}
@@ -41,46 +41,48 @@
 </div>
 
 {% if posts %} {% for post in posts %}
-<div class="card m-3">
-  <div class="card-header">
-    <a href="{% url 'profile' post.user %}">{{ post.user }}</a>
-  </div>
-  <div class="card-body">
-    <p class="card-text content-text" data-postid="{{ post.id }}">
-      {{ post.content }}
-    </p>
-    <p class="card-text">
-      <small class="text-muted">{{ post.timestamp }}</small>
-    </p>
-  </div>
-  <div class="card-footer">
-    <div class="d-flex justify-content-between align-items-center">
-      {% if user.is_authenticated %}
-      <button
-        class="btn btn-sm btn-primary like-button"
-        data-postid="{{ post.id }}"
-      >
-        {% if post.liked %} Unlike {% else %} Like {% endif %}
-      </button>
-      {% endif %}
-      <div
-        type="button"
-        id="likes-count"
-        class="btn btn-sm btn-outline-secondary"
-        data-postid="{{ post.id }}"
-      >
-        {{ post.like }} Likes
-      </div>
-      {% if post.user == user %}
-      <div>
+<div class="card-box">
+  <div class="card">
+    <div class="card-header">
+      <a href="{% url 'profile' post.user %}">{{ post.user }}</a>
+    </div>
+    <div class="card-body">
+      <p class="card-text content-text" data-postid="{{ post.id }}">
+        {{ post.content }}
+      </p>
+      <p class="card-text">
+        <small class="text-muted">{{ post.timestamp }}</small>
+      </p>
+    </div>
+    <div class="card-footer">
+      <div class="d-flex justify-content-between align-items-center">
+        {% if user.is_authenticated %}
         <button
-          class="btn btn-sm m-2 btn-default edit-button"
+          class="btn btn-sm btn-primary like-button"
           data-postid="{{ post.id }}"
         >
-          Edit post
+          {% if post.liked %} Unlike {% else %} Like {% endif %}
         </button>
+        {% endif %}
+        <div
+          type="button"
+          id="likes-count"
+          class="m-2"
+          data-postid="{{ post.id }}"
+        >
+          {{ post.like }} Likes
+        </div>
+        {% if post.user == user %}
+        <div>
+          <button
+            class="btn btn-sm m-2 btn-default edit-button"
+            data-postid="{{ post.id }}"
+          >
+            Edit post
+          </button>
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
   </div>
 </div>

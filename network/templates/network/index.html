@@ -15,38 +15,34 @@
 {% if error %}
 <div class="alert alert-danger">{{error}}</div>
 {% endif %} {% for post in data %}
-<div class="card m-3">
-  <div class="card-header">
-    <a href="{% url 'profile' post.user %}">{{ post.user }}</a>
-  </div>
-  <div class="card-body">
-    <p class="card-text content-text" data-postid="{{ post.id }}">
-      {{ post.content }}
-    </p>
-    <p class="card-text">
-      <small class="text-muted">{{ post.timestamp }}</small>
-    </p>
-  </div>
-  <div class="card-footer">
-    <div class="justify-content-between align-items-center">
-      {% if user.is_authenticated %}
-      <div class="row p-3">
-      
-            <button
-              class="btn btn-sm btn-primary like-button "
-              data-postid="{{ post.id }}"
-            >
-              {% if post.liked %} Unlike {% else %} Like {% endif %}
-            </button>
-        
-          {% endif %}
-          <div
-          id="likes-count"
-          class="btn btn-sm btn-outline-secondary col-1"
-          data-postid="{{ post.id }}"
+<div class="card-box">
+  <div class="card">
+    <div class="card-header">
+      <a href="{% url 'profile' post.user %}">{{ post.user }}</a>
+    </div>
+    <div class="card-body">
+      <p class="card-text content-text" data-postid="{{ post.id }}">
+        {{ post.content }}
+      </p>
+      <p class="card-text">
+        <small class="text-muted">{{ post.timestamp }}</small>
+      </p>
+    </div>
+    <div class="card-footer">
+      <div class="justify-content-between align-items-center">
+        {% if user.is_authenticated %}
+        <div class="row p-3">
+          <button
+            class="btn btn-sm btn-primary like-button"
+            data-postid="{{ post.id }}"
           >
-          <span>{{ post.likes }} Likes</span>
-        </div>
+            {% if post.liked %} Unlike {% else %} Like {% endif %}
+          </button>
+
+          {% endif %}
+          <div id="likes-count" class="m-2" data-postid="{{ post.id }}">
+            <span>{{ post.likes }} Likes</span>
+          </div>
         </div>
       </div>
       {% if post.user == user.username %}
@@ -65,24 +61,38 @@
     </div>
   </div>
 </div>
-{% endfor %} 
+
+{% endfor %}
 
 <nav aria-label="" class="m-3">
   <ul class="pagination pagination-lg">
-    <li class="page-item"><span style="font-size: smaller">Page {{ data.number }} of {{ data.paginator.num_pages }}.</span></li>
-        {% if data.has_previous %}
-            <!-- <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li> -->
-            <li class="page-item"> <a class="page-link" href="?page={{ data.previous_page_number }}">previous</a> {% endif %}</li>
-        {% if data.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ data.next_page_number }}">next</a></li>
-            <!-- <li class="page-item"><a class="page-link" href="?page={{ data.paginator.num_pages }}">last &raquo;</a></li> -->
-        {% endif %}
+    <li class="page-item">
+      <span style="font-size: smaller"
+        >Page {{ data.number }} of {{ data.paginator.num_pages }}.</span
+      >
+    </li>
+    {% if data.has_previous %}
+    <!-- <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li> -->
+    <li class="page-item">
+      <a class="page-link" href="?page={{ data.previous_page_number }}"
+        >previous</a
+      >
+      {% endif %}
+    </li>
+    {% if data.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ data.next_page_number }}">next</a>
+    </li>
+    <!-- <li class="page-item"><a class="page-link" href="?page={{ data.paginator.num_pages }}">last &raquo;</a></li> -->
+    {% endif %}
   </ul>
 </nav>
 
-
 {% endblock %} {% block script %}
-
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
 <script src="{% static 'network/post.js' %}"></script>
 <link
   rel="stylesheet"
